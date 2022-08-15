@@ -1,0 +1,28 @@
+.wrap {
+  width: 900px;
+  margin: auto;
+  text-align: center;
+  color: black;
+  /* background-image: url('https://www.ancient-origins.net/sites/default/files/field/image/Agesilaus-II-cover.jpg'); */
+  background-position: center;
+  background-size: cover;
+  padding-top: 40px;
+}
+.divbox {
+  background-color: rgb(174, 0, 255);
+  width: 500px;
+  margin: auto;
+  margin-bottom: 50px;
+}
+#card {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-bottom: 10px;
+}
+#button_control{
+  margin-top: 10px;
+}
+
+#form_control{
+  display: none;
+}
