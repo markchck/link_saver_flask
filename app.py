@@ -1,12 +1,9 @@
-from curses import meta
-from email import header
-from http import client
-from pydoc import describe
+
 from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
 
-import requests
+import requests, pdb
 from bs4 import BeautifulSoup
 
 from pymongo import MongoClient
@@ -34,7 +31,12 @@ def saving():
   }
   data = requests.get(url_receive, headers=headers)
   soup = BeautifulSoup(data.text, "html.parser")
-  og_image = soup.select_one('meta[property="og:image"]')["content"]
+  before_parsing_image = soup.select('meta[property="og:image"]')
+  if len(before_parsing_image) == 0:
+    og_image = "http://geojecci.korcham.net/images/no-image01.gif"
+  else:
+    og_image = before_parsing_image[0]["content"]
+    
   og_title = soup.select_one('meta[property="og:title"]')["content"]
   og_description = soup.select_one('meta[property="og:description"]')["content"]
   
