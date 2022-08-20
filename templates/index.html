@@ -90,10 +90,27 @@
         written_comment = $("#card-text-"+id)[i].innerHTML
         $(".input-title")[i].value = written_title
         $(".input-text")[i].value= written_comment
-        $("#submit_button").contents().unwrap().wrap(`<button id="submit_button" type="submit" onclick="submit(${i},${(responsed_result[i])})">워메</button>`)
+        // $("#submit_button").contents().unwrap().wrap(`<button id="submit_button" type="submit" onclick="submit(${i},${(responsed_result[i])})">워메</button>`)
         $("#submit_button")[i].innerHTML = "수정하기"
         // console.log($("#submit_button")[i].innerHTML)
       }
+      $.ajax({
+        type: "POST",
+        url: "/update",
+        data:{
+          "title" : responsed_result[id].title,
+          "comment" : responsed_result[id].comment,
+          "new_title" : written_title,
+          "new_comment" : written_comment
+        },
+        success: function(responsed_result){
+          console.log(responsed_result)
+          window.location.reload();
+        },error: function(res){
+          alert("죄송합니다. 수정 기능에 에러가 있습니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
+          consol.log(res)
+        }
+      })
     };
     function cardDelete(id, responsed_result){
       $.ajax({
@@ -112,58 +129,22 @@
         }
       })
     }
-    // function button_control() {
-    //   if ($("#form_control").css("display") == "block") {
-    //     $("#form_control").css({
-    //       'display' : "none",
-    //       'color' : 'red'
-    //     })
-    //     // $("#form_control").hide();
-    //     $("#button_control").text("포스팅 박스 열기");
-    //   }else {
-    //     $("#form_control").show();
-    //     $("#button_control").text("포스팅 박스 닫기");
-    //   }
-    // }
-    function submit(id, res){
-
-      console.log(id, res)
-      if (Array.isArray($("#submit_button"))== false) {
-        $.ajax({
-          type: "POST",
-          url: "/memo",
-          data: {
-            "input-title" : $(".input-title").val(),
-            "input-text" : $(".input-text").val()
-          },
-          success: function(res){
-            window.location.reload();
-          },
-          error: function(res){
-            alert("죄송합니다. 제출기능에 에러가 있습니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
-            consol.log(res)
-          }
-        })
-      }else{
-        console.log("hi");
-        // $.ajax({
-        //   type: "POST",
-        //   url: "/update",
-        //   data:{
-        //     "title" : responsed_result[id].title,
-        //     "comment" : responsed_result[id].comment,
-        //     "new_title" : written_title,
-        //     "new_comment" : written_comment
-        //   },
-        //   success: function(responsed_result){
-        //     console.log(responsed_result)
-        //     window.location.reload();
-        //   },error: function(res){
-        //     alert("죄송합니다. 수정 기능에 에러가 있습니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
-        //     consol.log(res)
-        //   }
-        // })
-      }
+    function submit(){
+      $.ajax({
+        type: "POST",
+        url: "/memo",
+        data: {
+          "input-title" : $(".input-title").val(),
+          "input-text" : $(".input-text").val()
+        },
+        success: function(res){
+          window.location.reload();
+        },
+        error: function(res){
+          alert("죄송합니다. 제출기능에 에러가 있습니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
+          consol.log(res)
+        }
+      })
     }
   </script>
   <title>나홀로 메모장 ver2.0 </title>
