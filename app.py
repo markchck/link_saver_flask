@@ -33,21 +33,19 @@ def saving():
 
 @app.route('/update', methods=["POST"])
 def update_api():
-  id_received = request.form["id"]
+  # id_received = request.form["id"]
   # title_received = request.form["title"]
   # content_received = request.form["comment"]
 
   # target_star = db.articles.find_one({'id': int(id_received)}, {'_id':False})
-  print(id_received)
-  # new_like = target_star["like"]+1
-  # db.movie_star.update_one({'id':int(id_received)}, {'$set':{'like':new_like}})
-  # pdb.set_trace()
+  # print(id_received)
   return jsonify({'result':'success'})
 
 @app.route('/delete', methods=["POST"])
 def delete_api():
-  id_received = request.form["id"]
-  db.articles.delete_one({'id': int(id_received)})
+  id_title = request.form["title"]
+  id_comment = request.form["comment"]
+  db.articles.delete_one({'title': id_title, 'comment': id_comment})
   return jsonify({'result':'success'})
   
 if __name__ == '__main__':

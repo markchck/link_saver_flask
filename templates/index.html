@@ -38,7 +38,7 @@
       margin-top: 10px;
     }
     #form_control{
-      display: none;
+      /* display: none; */
     }
   </style>
 
@@ -60,7 +60,7 @@
           cardMaking(response);
         }},
         error: function (response){
-          alert("불편을 드려 죄송합니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
+          alert("죄송합니다 조회기능에 에러가 있습니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
           console.log(response)
         }
       })
@@ -84,19 +84,23 @@
         $("#card-list").append(htmlCard);
       }
     };
-
     function cardChanging(id, responsed_result){
-      $.ajax({
+      $(".input-title").val() = responsed_result[id].title
+
+
+      ,$.ajax({
         type: "POST",
         url: "/update",
         data:{
-          "id" : id,
           "title" : responsed_result[id].title,
           "comment" : responsed_result[id].comment
         },
         success: function(responsed_result){
           console.log(responsed_result)
           window.location.reload();
+        },error: function(res){
+          alert("죄송합니다. 수정 기능에 에러가 있습니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
+          consol.log(res)
         }
       })
     };
@@ -105,39 +109,44 @@
         type: "POST",
         url: "/delete",
         data: {
-          "id" : id
+          "title" : responsed_result[id].title,
+          "comment" : responsed_result[id].comment
         },
         success: function(responsed_result){
           window.location.reload();
+        },
+        error: function(res){
+          alert("죄송합니다. 삭제기능에 에러가 있습니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
+          consol.log(res)
         }
       })
     }
-    function button_control() {
-      if ($("#form_control").css("display") == "block") {
-        $("#form_control").css({
-          'display' : "none",
-          'color' : 'red'
-        })
-        // $("#form_control").hide();
-        $("#button_control").text("포스팅 박스 열기");
-      }else {
-        $("#form_control").show();
-        $("#button_control").text("포스팅 박스 닫기");
-      }
-    }
+    // function button_control() {
+    //   if ($("#form_control").css("display") == "block") {
+    //     $("#form_control").css({
+    //       'display' : "none",
+    //       'color' : 'red'
+    //     })
+    //     // $("#form_control").hide();
+    //     $("#button_control").text("포스팅 박스 열기");
+    //   }else {
+    //     $("#form_control").show();
+    //     $("#button_control").text("포스팅 박스 닫기");
+    //   }
+    // }
     function submit(){
       $.ajax({
         type: "POST",
         url: "/memo",
         data: {
-          "input-title" : $("#input-title").val(),
-          "input-text" : $("#input-text").val()
+          "input-title" : $(".input-title").val(),
+          "input-text" : $(".input-text").val()
         },
         success: function(res){
           window.location.reload();
         },
         error: function(res){
-          alert("불편을 드려 죄송합니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
+          alert("죄송합니다. 제출기능에 에러가 있습니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
           consol.log(res)
         }
       })
@@ -149,10 +158,10 @@
   <div class="wrap">
     <div class="divbox">
       <div class="title"> <h1>나홀로 링크 메모장 ver2.0</h1></div>
-      <button id="button_control" onclick="button_control()">포스팅 박스 열기</button> <br><br>
+      <!-- <button id="button_control" onclick="button_control()">포스팅 박스 열기</button> <br><br> -->
       <div id="form_control">
-        <input type="text" id="input-title" placeholder="제목을 입력하세요"></input> <br>
-        <textarea id="input-text" placeholder="내용을 입력하세요"></textarea> <br>
+        <input type="text" class="input-title" placeholder="제목을 입력하세요"></input> <br>
+        <textarea class="input-text" placeholder="내용을 입력하세요"></textarea> <br>
         <button type="submit" onclick="submit()">저장하기</button>
       </div> 
     </div>
