@@ -33,11 +33,12 @@ def saving():
 
 @app.route('/update', methods=["POST"])
 def update_api():
-  # id_received = request.form["id"]
-  # title_received = request.form["title"]
-  # content_received = request.form["comment"]
-
-  # target_star = db.articles.find_one({'id': int(id_received)}, {'_id':False})
+  title_received = request.form["title"]
+  comment_received = request.form["comment"]
+  title_updated = request.form["new_title"]
+  comment_updated = request.form["new_comment"]
+  print(title_updated)
+  db.articles.update_one({'title': title_received, 'comment':comment_received}, {'$set' :{'title': title_updated, 'comment': comment_updated}}), {'_id':False}
   # print(id_received)
   return jsonify({'result':'success'})
 

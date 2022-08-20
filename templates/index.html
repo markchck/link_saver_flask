@@ -70,11 +70,9 @@
       for (i=0; i < responsed_result.length; i++){
         let htmlCard = `
         <div class="card" style="width: 18rem; margin: auto;">
-          ${i}
           <div class="card-body">
-            <input class="card-id" type="hidden">${i}</input>
-            <h5 class="card-title">${responsed_result[i].title}</h5>
-            <p class="card-text">${responsed_result[i].comment}</p>
+            <h5 class="card-title" id="card-title-${i}">${responsed_result[i].title}</h5>
+            <p class="card-text" id="card-text-${i}">${responsed_result[i].comment}</p>
           </div>
           <div>
             <button onclick="cardChanging(${i}, responsed_result)">수정</button>
@@ -85,24 +83,17 @@
       }
     };
     function cardChanging(id, responsed_result){
-      $(".input-title").val() = responsed_result[id].title
-
-
-      ,$.ajax({
-        type: "POST",
-        url: "/update",
-        data:{
-          "title" : responsed_result[id].title,
-          "comment" : responsed_result[id].comment
-        },
-        success: function(responsed_result){
-          console.log(responsed_result)
-          window.location.reload();
-        },error: function(res){
-          alert("죄송합니다. 수정 기능에 에러가 있습니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
-          consol.log(res)
-        }
-      })
+      let written_title
+      let written_comment
+      for (i=0; i< $("#card-title-"+id).length; i++){
+        written_title = $("#card-title-"+id)[i].innerHTML
+        written_comment = $("#card-text-"+id)[i].innerHTML
+        $(".input-title")[i].value = written_title
+        $(".input-text")[i].value= written_comment
+        $("#submit_button").contents().unwrap().wrap(`<button id="submit_button" type="submit" onclick="submit(${i},${(responsed_result[i])})">워메</button>`)
+        $("#submit_button")[i].innerHTML = "수정하기"
+        // console.log($("#submit_button")[i].innerHTML)
+      }
     };
     function cardDelete(id, responsed_result){
       $.ajax({
@@ -134,22 +125,45 @@
     //     $("#button_control").text("포스팅 박스 닫기");
     //   }
     // }
-    function submit(){
-      $.ajax({
-        type: "POST",
-        url: "/memo",
-        data: {
-          "input-title" : $(".input-title").val(),
-          "input-text" : $(".input-text").val()
-        },
-        success: function(res){
-          window.location.reload();
-        },
-        error: function(res){
-          alert("죄송합니다. 제출기능에 에러가 있습니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
-          consol.log(res)
-        }
-      })
+    function submit(id, res){
+
+      console.log(id, res)
+      if (Array.isArray($("#submit_button"))== false) {
+        $.ajax({
+          type: "POST",
+          url: "/memo",
+          data: {
+            "input-title" : $(".input-title").val(),
+            "input-text" : $(".input-text").val()
+          },
+          success: function(res){
+            window.location.reload();
+          },
+          error: function(res){
+            alert("죄송합니다. 제출기능에 에러가 있습니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
+            consol.log(res)
+          }
+        })
+      }else{
+        console.log("hi");
+        // $.ajax({
+        //   type: "POST",
+        //   url: "/update",
+        //   data:{
+        //     "title" : responsed_result[id].title,
+        //     "comment" : responsed_result[id].comment,
+        //     "new_title" : written_title,
+        //     "new_comment" : written_comment
+        //   },
+        //   success: function(responsed_result){
+        //     console.log(responsed_result)
+        //     window.location.reload();
+        //   },error: function(res){
+        //     alert("죄송합니다. 수정 기능에 에러가 있습니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
+        //     consol.log(res)
+        //   }
+        // })
+      }
     }
   </script>
   <title>나홀로 메모장 ver2.0 </title>
@@ -162,7 +176,7 @@
       <div id="form_control">
         <input type="text" class="input-title" placeholder="제목을 입력하세요"></input> <br>
         <textarea class="input-text" placeholder="내용을 입력하세요"></textarea> <br>
-        <button type="submit" onclick="submit()">저장하기</button>
+        <button id="submit_button" type="submit" onclick="submit()">저장하기</button>
       </div> 
     </div>
     <div id="card-list">
