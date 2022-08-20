@@ -15,7 +15,6 @@ def home():
 @app.route('/memo', methods=['GET'])
 def listing():
   result = list(db.articles.find({}, {'_id': 0}))
-  # result = list(db.articles.find({}))
   return jsonify({'result':'success', 'msg' : 'Get connected', 'dbresult':result})
 
 @app.route('/memo', methods=['POST'])
@@ -39,7 +38,6 @@ def update_api():
   comment_updated = request.form["new_comment"]
   print(title_updated)
   db.articles.update_one({'title': title_received, 'comment':comment_received}, {'$set' :{'title': title_updated, 'comment': comment_updated}}), {'_id':False}
-  # print(id_received)
   return jsonify({'result':'success'})
 
 @app.route('/delete', methods=["POST"])

@@ -90,10 +90,15 @@
         written_comment = $("#card-text-"+id)[i].innerHTML
         $(".input-title")[i].value = written_title
         $(".input-text")[i].value= written_comment
-        // $("#submit_button").contents().unwrap().wrap(`<button id="submit_button" type="submit" onclick="submit(${i},${(responsed_result[i])})">워메</button>`)
-        $("#submit_button")[i].innerHTML = "수정하기"
-        // console.log($("#submit_button")[i].innerHTML)
+        $("#submit_button").contents().unwrap().wrap(`
+          <button id="submit_button" type="submit" onclick="update(${i},${responsed_result[i]} )"></button>
+        `)
+        $("#submit_button").innerHTML = "저장하기"
+        // console.log(responsed_result[i].title)
       }
+    };
+    function update(id, responsed_result){
+      // alert("죄송합니다. 내부로직에 문제가 있습니다 조속히 고치도록 하겠습니다.")
       $.ajax({
         type: "POST",
         url: "/update",
@@ -111,7 +116,7 @@
           consol.log(res)
         }
       })
-    };
+    }
     function cardDelete(id, responsed_result){
       $.ajax({
         type: "POST",
