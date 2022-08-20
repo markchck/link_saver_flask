@@ -7,40 +7,156 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
   integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-  <!-- Optional JavaScript -->
+  
   <!-- jQuery and Bootstrap Bundle (includes Popper) -->
   <script  src="https://code.jquery.com/jquery-3.4.1.min.js"  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
 
+  <!-- CSS -->
+  <style>
+    .wrap {
+      width: 900px;
+      margin: auto;
+      text-align: center;
+      color: black;
+      background-position: center;
+      background-size: cover;
+      padding-top: 40px;
+    }
+    .divbox {
+      background-color: rgb(174, 0, 255);
+      width: 500px;
+      margin: auto;
+      margin-bottom: 50px;
+    }
+    #card-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      margin-bottom: 10px;
+    }
+    #button_control{
+      margin-top: 10px;
+    }
+    #form_control{
+      display: none;
+    }
+  </style>
 
-  <!-- 구글폰트 -->
-  <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
-  <title>SW사관학교 정글 | 나홀로 메모장</title>
-  <link rel="stylesheet" type="text/css" href="/static/style.css">
-  <script src="/static/script.js"></script>
+  <!-- javascript -->
+  <script>
+    $(document).ready(function(){
+      readApi();
+    });
+    function readApi() {
+      // fetch('/memo')
+      // .then((res) => console.log(res.json()))
+      // .catch(res => alert(res))
+      $.ajax({
+        type: "GET",
+        url: "/memo",
+        data: {},
+        success: function (response) {
+        if (response["result"] == "success") {
+          cardMaking(response);
+        }},
+        error: function (response){
+          alert("불편을 드려 죄송합니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
+          console.log(response)
+        }
+      })
+    };
+    function cardMaking(res){
+      responsed_result = res.dbresult
+      for (i=0; i < responsed_result.length; i++){
+        let htmlCard = `
+        <div class="card" style="width: 18rem; margin: auto;">
+          ${i}
+          <div class="card-body">
+            <input class="card-id" type="hidden">${i}</input>
+            <h5 class="card-title">${responsed_result[i].title}</h5>
+            <p class="card-text">${responsed_result[i].comment}</p>
+          </div>
+          <div>
+            <button onclick="cardChanging(${i}, responsed_result)">수정</button>
+            <button onclick="cardDelete(${i}, responsed_result)">삭제</button>
+          </div>
+        </div>`
+        $("#card-list").append(htmlCard);
+      }
+    };
+
+    function cardChanging(id, responsed_result){
+      $.ajax({
+        type: "POST",
+        url: "/update",
+        data:{
+          "id" : id,
+          "title" : responsed_result[id].title,
+          "comment" : responsed_result[id].comment
+        },
+        success: function(responsed_result){
+          console.log(responsed_result)
+          window.location.reload();
+        }
+      })
+    };
+    function cardDelete(id, responsed_result){
+      $.ajax({
+        type: "POST",
+        url: "/delete",
+        data: {
+          "id" : id
+        },
+        success: function(responsed_result){
+          window.location.reload();
+        }
+      })
+    }
+    function button_control() {
+      if ($("#form_control").css("display") == "block") {
+        $("#form_control").css({
+          'display' : "none",
+          'color' : 'red'
+        })
+        // $("#form_control").hide();
+        $("#button_control").text("포스팅 박스 열기");
+      }else {
+        $("#form_control").show();
+        $("#button_control").text("포스팅 박스 닫기");
+      }
+    }
+    function submit(){
+      $.ajax({
+        type: "POST",
+        url: "/memo",
+        data: {
+          "input-title" : $("#input-title").val(),
+          "input-text" : $("#input-text").val()
+        },
+        success: function(res){
+          window.location.reload();
+        },
+        error: function(res){
+          alert("불편을 드려 죄송합니다. markchck@gmail.com으로 문의주시면 즉시 피드백 드리겠습니다.")
+          consol.log(res)
+        }
+      })
+    }
+  </script>
+  <title>나홀로 메모장 ver2.0 </title>
 </head>
 <body>
   <div class="wrap">
     <div class="divbox">
-      <div class="title"> 나홀로 링크 메모장!</div>
-      <div>중요한 링크를 저장해두고 나중에 볼 수 있는 공간 입니다.</div>
+      <div class="title"> <h1>나홀로 링크 메모장 ver2.0</h1></div>
       <button id="button_control" onclick="button_control()">포스팅 박스 열기</button> <br><br>
-      <!-- <form method="post", action="/memo" id="form_control">
-        <label>아티클 URL</label> <br>
-          <input type="text" name="url_give"></input> <br>
-        <label>간단 코멘트</label> <br>
-          <textarea name="comment_give"></textarea> <br>
-        <input type="submit"/>
-      </form> <br><br> -->
       <div id="form_control">
-        <label>아티클</label><br>
-        <input type="text" id="url_give" value="http://"></input> <br>
-        <label>간단 코멘트</label><br>
-        <textarea id="comment_give"></textarea> <br>
-        <input type="submit" onclick="submit()">
+        <input type="text" id="input-title" placeholder="제목을 입력하세요"></input> <br>
+        <textarea id="input-text" placeholder="내용을 입력하세요"></textarea> <br>
+        <button type="submit" onclick="submit()">저장하기</button>
       </div> 
     </div>
-    <div id="card">
+    <div id="card-list">
     </div>
   </div>
 </body>
